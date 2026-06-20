@@ -1,0 +1,19 @@
+# Frontend
+expense-smart-*/node_modules
+expense-smart-*/dist
+
+# Backend
+expense-tracker/target
+
+# VS Code
+.vscode/
+
+# IntelliJ IDEA
+.idea/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
