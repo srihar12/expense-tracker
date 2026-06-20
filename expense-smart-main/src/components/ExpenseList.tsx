@@ -1,5 +1,4 @@
-// Expense list table with delete and sorting + TOTAL (FIXED)
-
+import React from "react";
 import {
   Trash2,
   UtensilsCrossed,
@@ -9,10 +8,10 @@ import {
   Gamepad2,
   MoreHorizontal,
 } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import type { Expense } from "@/lib/expense-types";
 import { CATEGORY_COLORS } from "@/lib/expense-types";
-import React from "react";
 
 const CATEGORY_ICON_MAP: Record<string, React.ReactNode> = {
   Food: <UtensilsCrossed className="h-3.5 w-3.5" />,
@@ -28,8 +27,10 @@ interface ExpenseListProps {
   onDelete: (id: string) => void;
 }
 
-export function ExpenseList({ expenses, onDelete }: ExpenseListProps) {
-  // ✅ Calculate total
+export function ExpenseList({
+  expenses,
+  onDelete,
+}: ExpenseListProps) {
   const totalAmount = expenses.reduce(
     (sum, expense) => sum + expense.amount,
     0
@@ -37,8 +38,8 @@ export function ExpenseList({ expenses, onDelete }: ExpenseListProps) {
 
   if (!expenses || expenses.length === 0) {
     return (
-      <div className="stat-card text-center py-12 text-muted-foreground animate-fade-in">
-        <p className="text-sm">
+      <div className="rounded-xl border bg-card text-card-foreground p-8 text-center">
+        <p className="text-muted-foreground">
           No expenses yet. Add your first expense above!
         </p>
       </div>
@@ -46,34 +47,41 @@ export function ExpenseList({ expenses, onDelete }: ExpenseListProps) {
   }
 
   return (
-    <div className="stat-card p-0 overflow-hidden animate-fade-in">
-      <div className="px-5 py-4 border-b border-border">
-        <h3 className="text-lg font-semibold text-foreground">
+    <div className="rounded-xl border bg-card text-card-foreground overflow-hidden shadow-sm">
+      {/* Header */}
+      <div className="px-5 py-4 border-b">
+        <h3 className="text-lg font-semibold">
           Recent Expenses
         </h3>
-        <p className="text-xs text-muted-foreground mt-0.5">
+
+        <p className="text-xs text-muted-foreground mt-1">
           {expenses.length} transaction
           {expenses.length !== 1 ? "s" : ""}
         </p>
       </div>
 
+      {/* Table */}
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-border bg-secondary/30">
-              <th className="text-left px-5 py-2.5 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            <tr className="border-b bg-muted/40">
+              <th className="px-5 py-3 text-left text-xs font-medium text-muted-foreground uppercase">
                 Date
               </th>
-              <th className="text-left px-5 py-2.5 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+
+              <th className="px-5 py-3 text-left text-xs font-medium text-muted-foreground uppercase">
                 Category
               </th>
-              <th className="text-right px-5 py-2.5 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+
+              <th className="px-5 py-3 text-right text-xs font-medium text-muted-foreground uppercase">
                 Amount
               </th>
-              <th className="text-left px-5 py-2.5 text-xs font-medium text-muted-foreground uppercase tracking-wider hidden sm:table-cell">
+
+              <th className="px-5 py-3 text-left text-xs font-medium text-muted-foreground uppercase hidden sm:table-cell">
                 Description
               </th>
-              <th className="px-5 py-2.5 w-10"></th>
+
+              <th className="w-12"></th>
             </tr>
           </thead>
 
@@ -81,36 +89,40 @@ export function ExpenseList({ expenses, onDelete }: ExpenseListProps) {
             {expenses.map((expense) => (
               <tr
                 key={expense.id}
-                className="border-b border-border/50 hover:bg-secondary/20 transition-colors"
+                className="border-b hover:bg-muted/20 transition-colors"
               >
-                <td className="px-5 py-3 text-muted-foreground mono-number text-xs whitespace-nowrap">
-                  {new Date(expense.date).toLocaleDateString("en-IN", {
-                    day: "2-digit",
-                    month: "short",
-                  })}
+                <td className="px-5 py-3 text-muted-foreground whitespace-nowrap">
+                  {new Date(expense.date).toLocaleDateString(
+                    "en-IN",
+                    {
+                      day: "2-digit",
+                      month: "short",
+                    }
+                  )}
                 </td>
 
                 <td className="px-5 py-3">
                   <span
-                    className="category-badge flex items-center gap-1"
+                    className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium"
                     style={{
-                      backgroundColor: `${
-                        CATEGORY_COLORS[expense.category]
-                      }15`,
-                      color: CATEGORY_COLORS[expense.category],
+                      backgroundColor: `${CATEGORY_COLORS[expense.category]}20`,
+                      color:
+                        CATEGORY_COLORS[expense.category],
                     }}
                   >
-                    {CATEGORY_ICON_MAP[expense.category] ||
-                      CATEGORY_ICON_MAP["Other"]}
+                    {CATEGORY_ICON_MAP[
+                      expense.category
+                    ] || CATEGORY_ICON_MAP["Other"]}
+
                     {expense.category}
                   </span>
                 </td>
 
-                <td className="px-5 py-3 text-right font-semibold mono-number whitespace-nowrap">
+                <td className="px-5 py-3 text-right font-semibold whitespace-nowrap">
                   ₹{expense.amount.toLocaleString()}
                 </td>
 
-                <td className="px-5 py-3 text-muted-foreground truncate max-w-[200px] hidden sm:table-cell">
+                <td className="px-5 py-3 text-muted-foreground hidden sm:table-cell max-w-[250px] truncate">
                   {expense.description}
                 </td>
 
@@ -118,28 +130,30 @@ export function ExpenseList({ expenses, onDelete }: ExpenseListProps) {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-7 w-7 text-muted-foreground hover:text-destructive"
-                    onClick={() => {
-                      if (expense.id !== undefined && expense.id !== null) {
-                        onDelete(String(expense.id)); // ✅ FIX HERE
-                      }
-                    }}
+                    className="h-8 w-8 hover:text-red-500"
+                    onClick={() =>
+                      expense.id &&
+                      onDelete(String(expense.id))
+                    }
                   >
-                    <Trash2 className="h-3.5 w-3.5" />
+                    <Trash2 className="h-4 w-4" />
                   </Button>
                 </td>
               </tr>
             ))}
           </tbody>
 
-          {/* ✅ TOTAL ROW */}
+          {/* Total Row */}
           <tfoot>
-            <tr className="bg-secondary/40 border-t border-border">
-              <td colSpan={2} className="px-5 py-3 font-semibold text-foreground">
+            <tr className="border-t bg-muted/40">
+              <td
+                colSpan={2}
+                className="px-5 py-3 font-semibold"
+              >
                 Total
               </td>
 
-              <td className="px-5 py-3 text-right font-bold text-primary mono-number">
+              <td className="px-5 py-3 text-right font-bold text-primary">
                 ₹{totalAmount.toLocaleString()}
               </td>
 
