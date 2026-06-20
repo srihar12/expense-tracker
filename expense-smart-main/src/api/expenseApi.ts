@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API = "http://localhost:8080";
+// Render Backend URL
+const API = "https://expense-tracker-m277.onrender.com";
 
 // 👉 Add expense
 export const createExpense = (expense: any) => {
